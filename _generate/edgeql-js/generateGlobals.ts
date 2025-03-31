@@ -1,0 +1,63 @@
+import type { GeneratorParams } from "../genutil.ts";
+import { frag, getRef, splitName } from "../genutil.ts";
+import { dts, r, t, ts } from "../builders.ts";
+
+import { getStringRepresentation } from "./generateObjectTypes.ts";
+import type { $ } from "../genutil.ts";
+
+export const generateGlobals = ({ dir, globals, types }: GeneratorParams) => {
+  const globalsByMod: { [k: string]: $.introspect.Global[] } = {};
+  for (const [_id, g] of globals.entries()) {
+    const { mod } = splitName(g.name);
+    globalsByMod[mod] = globalsByMod[mod] || [];
+    globalsByMod[mod].push(g);
+  }
+
+  for (const [mod, gs] of Object.entries(globalsByMod)) {
+    const code = dir.getModule(mod);
+    const modName = mod.split("::").join("_");
+    code.writeln([
+      dts`declare `,
+      ...frag`const $${modName}__globals`,
+      t`: {`,
+      ...gs
+        .flatMap((g) => {
+          const { name } = splitName(g.name);
+          const targetType = types.get(g.target_id);
+          const targetTypeRep = getStringRepresentation(targetType, { types });
+          return [
+            t`  ${name}: _.syntax.$expr_Global<
+              // "${g.name}",
+              ${targetTypeRep.staticType},
+              $.Cardinality.${g.card}
+              >`,
+            t`,`,
+          ];
+        })
+        .slice(0, -1), // slice last comma
+      t`}`,
+      r` = {`,
+      ...gs
+        .flatMap((g) => {
+          const { name } = splitName(g.name);
+          return [
+            r`  ${name}: _.syntax.makeGlobal(
+              "${g.name}",
+              $.makeType(_.spec, "${g.target_id}", _.syntax.literal),
+              $.Cardinality.${g.card})`,
+            ts` as any`,
+            r`,`,
+          ];
+        })
+        .slice(0, -1), // slice last comma
+      r`};`,
+    ]);
+
+    code.nl();
+    code.registerRef(`$${modName}__globals`);
+    code.addToDefaultExport(
+      getRef(`$${modName}__globals`, { prefix: "" }),
+      "global",
+    );
+  }
+};

@@ -1,0 +1,6 @@
+{
+  "exports": "./mod.ts",
+  "license": "MIT",
+  "name": "@gel/deno",
+  "version": "0.1.0"
+}
