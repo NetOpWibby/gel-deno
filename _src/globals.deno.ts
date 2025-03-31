@@ -1,17 +1,17 @@
-import {
-  expect as _expect,
-  addMatchers,
-} from "https://deno.land/x/expect/mod.ts";
-export {
-  describe,
-  beforeAll,
-  afterAll,
-  it,
-} from "https://deno.land/std@0.177.0/testing/bdd.ts";
-import type { MatchResult } from "https://deno.land/x/expect/matchers.ts";
-import { bold, green, red } from "https://deno.land/std@0.177.0/fmt/colors.ts";
+// import { expect as _expect, addMatchers } from "https://deno.land/x/expect/mod.ts";
+import { expect as _expect } as expect from "@std/expect@1.0.14";
 
-export { process } from "https://deno.land/std@0.177.0/node/process.ts";
+export {
+  afterAll,
+  beforeAll,
+  describe,
+  it
+} from "jsr:@std/testing@1.0.10/bdd";
+
+// import type { MatchResult } from "https://deno.land/x/expect/matchers.ts";
+import { bold, green, red } from "jsr:@std/fmt@1.0.6/colors";
+
+export { process } from "node:process";
 export { Buffer } from "node:buffer";
 
 const ACTUAL = red(bold("actual"));
@@ -40,7 +40,7 @@ type ErrorConstructor = new (...args: any[]) => Error;
 function toThrow(
   value: any,
   error?: RegExp | ErrorConstructor | string | Error,
-): MatchResult {
+): { message?: string, pass: boolean } {
   let fn;
   if (typeof value === "function") {
     fn = value;
@@ -107,13 +107,13 @@ function toThrow(
   }
 }
 
-addMatchers({
-  toBeCloseTo() {
-    return { pass: true };
-  },
-  toThrow,
-  toThrowError: toThrow,
-});
+// addMatchers({
+//   toBeCloseTo() {
+//     return { pass: true };
+//   },
+//   toThrow,
+//   toThrowError: toThrow,
+// });
 
 type Expected = ReturnType<typeof _expect>;
 
