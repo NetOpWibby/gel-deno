@@ -114,7 +114,7 @@ export namespace net {
   export class BaseSocket<T extends Deno.Conn> extends EventEmitter {
     protected _conn: T | null = null;
     protected _paused = true;
-    protected _reader: Deno.Reader | null = null;
+    protected _reader: /*Deno.Reader |*/any | null = null;
 
     setNoDelay() {
       // No deno api for this

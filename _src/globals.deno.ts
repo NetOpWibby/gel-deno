@@ -11,7 +11,7 @@ export {
 // import type { MatchResult } from "https://deno.land/x/expect/matchers.ts";
 import { bold, green, red } from "jsr:@std/fmt@1.0.6/colors";
 
-export { process } from "node:process";
+export { default as process } from "node:process";
 export { Buffer } from "node:buffer";
 
 const ACTUAL = red(bold("actual"));
