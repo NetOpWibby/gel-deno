@@ -1,1 +1,1 @@
-export * from "./_generate/cli.ts";
+export * from "./generate/cli.ts";
