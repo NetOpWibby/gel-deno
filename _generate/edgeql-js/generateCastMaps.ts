@@ -1,24 +1,27 @@
-import { CodeBuffer, dts, r, t, ts, all } from "../builders.ts";
-import type { GeneratorParams } from "../genutil.ts";
+import { all, CodeBuffer, dts, r, t, ts } from "../builders.ts";
+
 import {
+  $,
   getRef,
   joinFrags,
   getLiteralToScalarMapping,
   quote,
   scalarToLiteralMapping,
 } from "../genutil.ts";
-import { $ } from "../genutil.ts";
+
 import { getStringRepresentation } from "./generateObjectTypes.ts";
+import type { GeneratorParams } from "../genutil.ts";
 
 const getRuntimeRef = (name: string) => getRef(name, { prefix: "" });
 
+
+
 export const generateCastMaps = (params: GeneratorParams) => {
-  const { dir, types, casts, typesByName, edgedbVersion } = params;
+  const { casts, dir, gelVersion, types, typesByName } = params;
   const { implicitCastMap } = casts;
-
-  const literalToScalarMapping = getLiteralToScalarMapping(edgedbVersion);
-
+  const literalToScalarMapping = getLiteralToScalarMapping(gelVersion);
   const f = dir.getPath("castMaps");
+
   f.addImportStar("edgedb", "edgedb");
   f.addImportStar("$", "./reflection", {
     modes: ["ts", "dts"],

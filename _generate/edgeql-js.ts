@@ -16,7 +16,7 @@ import { generateSetImpl } from "./edgeql-js/generateSetImpl.ts";
 
 const { path, fs, readFileUtf8, exists, walk } = adapter;
 
-export const configFileHeader = `// EdgeDB query builder`;
+export const configFileHeader = `// Gel query builder`;
 
 export type GeneratorParams = {
   dir: DirBuilder;
@@ -27,10 +27,11 @@ export type GeneratorParams = {
   functions: $.introspect.FunctionTypes;
   globals: $.introspect.Globals;
   operators: $.introspect.OperatorTypes;
-  edgedbVersion: Version;
+  gelVersion: Version;
 };
 
 export type Target = "ts" | "esm" | "cjs" | "mts" | "deno";
+
 export type Version = {
   major: number;
   minor: number;
@@ -58,8 +59,8 @@ export async function generateQueryBuilder(params: {
     outputDir = path.join(root, schemaDir, "edgeql-js");
   } else {
     throw new Error(
-      "No project config file found. Initialize an EdgeDB project with\n" +
-        "'edgedb project init' or specify an output directory with '--output-dir'",
+      "No project config file found. Initialize a Gel project with\n" +
+        "'gel project init' or specify an output directory with '--output-dir'",
     );
   }
 
@@ -92,7 +93,7 @@ export async function generateQueryBuilder(params: {
 
   const dir = new DirBuilder();
 
-  console.log(`Introspecting database schema...`);
+  console.log(`Introspecting database schema…`);
 
   const [types, scalars, casts, functions, operators, globals, version] =
     await Promise.all([
@@ -122,23 +123,23 @@ export async function generateQueryBuilder(params: {
     functions,
     globals,
     operators,
-    edgedbVersion: version,
+    gelVersion: version,
   };
-  console.log("Generating runtime spec...");
+  console.log("Generating runtime spec…");
   generateRuntimeSpec(generatorParams);
-  console.log("Generating cast maps...");
+  console.log("Generating cast maps…");
   generateCastMaps(generatorParams);
-  console.log("Generating scalars...");
+  console.log("Generating scalars…");
   generateScalars(generatorParams);
-  console.log("Generating object types...");
+  console.log("Generating object types…");
   generateObjectTypes(generatorParams);
-  console.log("Generating function types...");
+  console.log("Generating function types…");
   generateFunctionTypes(generatorParams);
-  console.log("Generating operators...");
+  console.log("Generating operators…");
   generateOperators(generatorParams);
-  console.log("Generating set impl...");
+  console.log("Generating set impl…");
   generateSetImpl(generatorParams);
-  console.log("Generating globals...");
+  console.log("Generating globals…");
   generateGlobals(generatorParams);
 
   if (version.major < 4) {
@@ -146,7 +147,7 @@ export async function generateQueryBuilder(params: {
     dir._map.delete("modules/fts");
   }
 
-  console.log("Generating index...");
+  console.log("Generating index…");
   generateIndex(generatorParams);
 
   // generate module imports

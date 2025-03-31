@@ -1,7 +1,7 @@
 /*!
- * This source file is part of the EdgeDB open source project.
+ * This source file is part of the Gel open source project.
  *
- * Copyright 2019-present MagicStack Inc. and the EdgeDB authors.
+ * Copyright 2019-present MagicStack Inc. and the Gel authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -189,7 +189,7 @@ const unencodableDurationFields: (keyof Duration)[] = [
   "days",
 ];
 
-export function checkValidEdgeDBDuration(duration: Duration): null | string {
+export function checkValidGelDuration(duration: Duration): null | string {
   for (const field of unencodableDurationFields) {
     if (duration[field] !== 0) {
       return field;
@@ -207,7 +207,7 @@ export class DurationCodec extends ScalarCodec implements ICodec {
         `a Duration instance was expected, got "${object}"`,
       );
     }
-    const invalidField = checkValidEdgeDBDuration(object);
+    const invalidField = checkValidGelDuration(object);
     if (invalidField) {
       throw new InvalidArgumentError(
         `Cannot encode a 'Duration' with a non-zero number of ${invalidField}`,

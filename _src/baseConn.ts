@@ -1,7 +1,7 @@
 /*!
- * This source file is part of the EdgeDB open source project.
+ * This source file is part of the Gel open source project.
  *
- * Copyright 2019-present MagicStack Inc. and the EdgeDB authors.
+ * Copyright 2019-present MagicStack Inc. and the Gel authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -107,7 +107,7 @@ export type ParseResult = [
   capabilities: number,
   inCodecBuffer: Uint8Array | null,
   outCodecBuffer: Uint8Array | null,
-  warnings: errors.EdgeDBError[],
+  warnings: errors.GelError[],
 ];
 
 export type connConstructor = new (
@@ -239,10 +239,10 @@ export class BaseRawConnection {
     number,
     Uint8Array,
     Uint8Array,
-    errors.EdgeDBError[],
+    errors.GelError[],
   ] {
     let capabilities = -1;
-    let warnings: errors.EdgeDBError[] = [];
+    let warnings: errors.GelError[] = [];
     if (this.isLegacyProtocol) {
       const headers = this._parseHeaders();
       if (headers.has(LegacyHeaderCodes.capabilities)) {
@@ -990,7 +990,7 @@ export class BaseRawConnection {
     let outCodec: ICodec | null = null;
     let inCodecBuf: Uint8Array | null = null;
     let outCodecBuf: Uint8Array | null = null;
-    let warnings: errors.EdgeDBError[] = [];
+    let warnings: errors.GelError[] = [];
 
     while (parsing) {
       if (!this.buffer.takeMessage()) {
@@ -1088,7 +1088,7 @@ export class BaseRawConnection {
     result: any[] | WriteBuffer,
     capabilitiesFlags: number = RESTRICTED_CAPABILITIES,
     options?: QueryOptions,
-  ): Promise<errors.EdgeDBError[]> {
+  ): Promise<errors.GelError[]> {
     const wb = new WriteMessageBuffer();
     wb.beginMessage(chars.$O);
 
@@ -1119,7 +1119,7 @@ export class BaseRawConnection {
 
     let error: Error | null = null;
     let parsing = true;
-    let warnings: errors.EdgeDBError[] = [];
+    let warnings: errors.GelError[] = [];
 
     while (parsing) {
       if (!this.buffer.takeMessage()) {
@@ -1259,7 +1259,7 @@ export class BaseRawConnection {
     state: Session,
     privilegedMode = false,
     language: Language = Language.EDGEQL,
-  ): Promise<{ result: any; warnings: errors.EdgeDBError[] }> {
+  ): Promise<{ result: any; warnings: errors.GelError[] }> {
     if (
       language !== Language.EDGEQL &&
       versionGreaterThan([3, 0], this.protocolVersion)
@@ -1273,7 +1273,7 @@ export class BaseRawConnection {
       if (args != null) {
         throw new errors.InterfaceError(
           `arguments in execute() is not supported in this version of ` +
-            `EdgeDB. Upgrade to EdgeDB 2.0 or newer.`,
+            `Gel. Upgrade to Gel 2.0 or newer.`,
         );
       }
       await this.legacyExecute(query, privilegedMode);
@@ -1296,7 +1296,7 @@ export class BaseRawConnection {
     const ret: any[] = [];
     // @ts-ignore
     let _;
-    let warnings: errors.EdgeDBError[] = [];
+    let warnings: errors.GelError[] = [];
 
     if (!this.isLegacyProtocol) {
       let [card, inCodec, outCodec] = this.queryCodecCache.get(key) ?? [];
@@ -1356,7 +1356,7 @@ export class BaseRawConnection {
       if (state !== Session.defaults()) {
         throw new errors.InterfaceError(
           `setting session state is not supported in this version of ` +
-            `EdgeDB. Upgrade to EdgeDB 2.0 or newer.`,
+            `Gel. Upgrade to Gel 2.0 or newer.`,
         );
       }
 

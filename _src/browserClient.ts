@@ -1,7 +1,7 @@
 import { BaseClientPool, Client, type ConnectOptions } from "./baseClient.ts";
 import { getConnectArgumentsParser } from "./conUtils.ts";
 import { cryptoUtils } from "./browserCrypto.ts";
-import { EdgeDBError } from "./errors/index.ts";
+import { GelError } from "./errors/index.ts";
 import { FetchConnection } from "./fetchConn.ts";
 import { getHTTPSCRAMAuth } from "./httpScram.ts";
 import { Options } from "./options.ts";
@@ -15,7 +15,7 @@ class FetchClientPool extends BaseClientPool {
 }
 
 export function createClient(): Client {
-  throw new EdgeDBError(
+  throw new GelError(
     `'createClient()' cannot be used in browser (or edge runtime) environment, ` +
       `use 'createHttpClient()' API instead`,
   );

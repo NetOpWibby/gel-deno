@@ -1,7 +1,7 @@
 /*!
- * This source file is part of the EdgeDB open source project.
+ * This source file is part of the Gel open source project.
  *
- * Copyright 2019-present MagicStack Inc. and the EdgeDB authors.
+ * Copyright 2019-present MagicStack Inc. and the Gel authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import {
 } from "./credentials.ts";
 import { getEnv } from "./adapter.shared.deno.ts";
 import { Duration, parseHumanDurationString } from "./datatypes/datetime.ts";
-import { checkValidEdgeDBDuration } from "./codecs/datetime.ts";
+import { checkValidGelDuration } from "./codecs/datetime.ts";
 import { InterfaceError } from "./errors/index.ts";
 import { decodeB64, utf8Decoder, utf8Encoder } from "./primitives/buffer.ts";
 import { crcHqx } from "./primitives/crcHqx.ts";
@@ -509,7 +509,7 @@ export function parseDuration(duration: string | number | Duration): number {
     }
   }
   if (duration instanceof Duration) {
-    const invalidField = checkValidEdgeDBDuration(duration);
+    const invalidField = checkValidGelDuration(duration);
     if (invalidField) {
       throw new InterfaceError(
         `invalid waitUntilAvailable duration, cannot have a '${invalidField}' value`,
@@ -1229,7 +1229,7 @@ async function parseCloudInstanceNameIntoConfig(
     const host = `${domainName}.c-${dnsBucket}.i.${dnsZone}`;
     config.setHost(host, `resolved from 'secretKey' and ${source}`);
   } catch (e) {
-    if (e instanceof errors.EdgeDBError) {
+    if (e instanceof errors.GelError) {
       throw e;
     } else {
       throw new InterfaceError(`Invalid secret key: ${e}`);

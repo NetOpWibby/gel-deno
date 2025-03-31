@@ -15,7 +15,7 @@ if (process.platform === "darwin") {
     const localAppDataDir =
       process.env.LOCALAPPDATA ?? path.join(homeDir(), "AppData", "Local");
 
-    return path.join(localAppDataDir, "EdgeDB", "config");
+    return path.join(localAppDataDir, "Gel", "config");
   };
 } else {
   _configDir = () => {

@@ -1,7 +1,7 @@
 /*!
- * This source file is part of the EdgeDB open source project.
+ * This source file is part of the Gel open source project.
  *
- * Copyright 2020-present MagicStack Inc. and the EdgeDB authors.
+ * Copyright 2020-present MagicStack Inc. and the Gel authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -112,7 +112,7 @@ export async function getAuthenticatedFetch(
     const headers = new Headers(init?.headers);
 
     if (config.user !== undefined) {
-      headers.append("X-EdgeDB-User", config.user);
+      headers.append("X-Gel-User", config.user);
     }
 
     if (token !== undefined) {

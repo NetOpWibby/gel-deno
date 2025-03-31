@@ -281,22 +281,26 @@ const run = async () => {
   }
 
   switch (generator) {
-    case Generator.QueryBuilder:
-      console.log(`Generating query builder...`);
+    case Generator.QueryBuilder: {
+      console.log(`Generating query builder…`);
       break;
-    case Generator.Queries:
-      console.log(`Generating functions from .edgeql files...`);
+    }
+
+    case Generator.Queries: {
+      console.log(`Generating functions from .edgeql files…`);
       break;
-    case Generator.Interfaces:
-      console.log(`Generating TS interfaces from schema...`);
+    }
+
+    case Generator.Interfaces: {
+      console.log(`Generating TS interfaces from schema…`);
       break;
+    }
   }
 
   if (!options.target) {
     if (!projectRoot) {
       throw new Error(
-        `Failed to detect project root.
-Run this command inside an EdgeDB project directory or specify the desired target language with \`--target\``,
+        `Failed to detect project root.\nRun this command inside a Gel project directory or specify the desired target language with \`--target\``
       );
     }
 
@@ -304,12 +308,11 @@ Run this command inside an EdgeDB project directory or specify the desired targe
     const tsConfigExists = await exists(tsConfigPath);
     const denoConfigPath = path.join(projectRoot, "deno.json");
     const denoJsonExists = await exists(denoConfigPath);
-
     let packageJson: { type: string } | null = null;
     const pkgJsonPath = path.join(projectRoot, "package.json");
-    if (await exists(pkgJsonPath)) {
+
+    if (await exists(pkgJsonPath))
       packageJson = JSON.parse(await readFileUtf8(pkgJsonPath));
-    }
 
     // doesn't work with `extends`
     // switch to more robust solution after splitting
@@ -319,24 +322,24 @@ Run this command inside an EdgeDB project directory or specify the desired targe
 
     if (isDenoRuntime || denoJsonExists) {
       options.target = "deno";
+
       console.log(
         `Detected ${
           isDenoRuntime ? "Deno runtime" : "deno.json"
-        }, generating TypeScript files with Deno-style imports.`,
+        }, generating TypeScript files with Deno-style imports.`
       );
     } else if (tsConfigExists) {
-      const tsConfig = tsConfigExists
-        ? (await readFileUtf8(tsConfigPath)).toLowerCase()
-        : "{}";
+      const tsConfig = tsConfigExists ?
+        (await readFileUtf8(tsConfigPath)).toLowerCase() :
+        "{}";
 
       const supportsESM: boolean =
         tsConfig.includes(`"module": "nodenext"`) ||
         tsConfig.includes(`"module": "node12"`);
+
       if (supportsESM && packageJson?.type === "module") {
         options.target = "mts";
-        console.log(
-          `Detected tsconfig.json with ES module support, generating .mts files with ESM imports.`,
-        );
+        console.log(`Detected tsconfig.json with ES module support, generating .mts files with ESM imports.`);
       } else {
         options.target = "ts";
         console.log(`Detected tsconfig.json, generating TypeScript files.`);
@@ -344,16 +347,13 @@ Run this command inside an EdgeDB project directory or specify the desired targe
     } else {
       if (packageJson?.type === "module") {
         options.target = "esm";
-        console.log(
-          `Detected "type": "module" in package.json, generating .js files with ES module syntax.`,
-        );
+        console.log(`Detected "type": "module" in package.json, generating .js files with ES module syntax.`);
       } else {
-        console.log(
-          `Detected package.json. Generating .js files with CommonJS module syntax.`,
-        );
+        console.log(`Detected package.json. Generating .js files with CommonJS module syntax.`);
         options.target = "cjs";
       }
     }
+
     const overrideTargetMessage = `   To override this, use the --target flag.
    Run \`npx @edgedb/generate --help\` for full options.`;
     console.log(overrideTargetMessage);
@@ -363,23 +363,26 @@ Run this command inside an EdgeDB project directory or specify the desired targe
     const username = (
       await parseConnectArguments({
         ...connectionConfig,
-        password: "",
+        password: ""
       })
     ).connectionParams.user;
+
     connectionConfig.password = await promptForPassword(username);
   }
-  if (options.passwordFromStdin) {
+
+  if (options.passwordFromStdin)
     connectionConfig.password = await readPasswordFromStdin();
-  }
 
   let client: Client;
+
   try {
-    const cxnCreatorFn = options.useHttpClient
-      ? createHttpClient
-      : createClient;
+    const cxnCreatorFn = options.useHttpClient ?
+      createHttpClient :
+      createClient;
+
     client = cxnCreatorFn({
       ...connectionConfig,
-      concurrency: 5,
+      concurrency: 5
     });
   } catch (e) {
     exitWithError(`Failed to connect: ${(e as Error).message}`);
@@ -423,7 +426,7 @@ Run this command inside an EdgeDB project directory or specify the desired targe
 function printHelp() {
   console.log(`@edgedb/generate
 
-Official EdgeDB code generators for TypeScript/JavaScript
+Official Gel code generators for TypeScript/JavaScript
 
 USAGE
     npx @edgedb/generate [COMMAND] [OPTIONS]
