@@ -1,5 +1,5 @@
 // import { expect as _expect, addMatchers } from "https://deno.land/x/expect/mod.ts";
-import { expect as _expect } as expect from "@std/expect@1.0.14";
+import { expect as _expect } from "@std/expect@1.0.14";
 
 export {
   afterAll,
